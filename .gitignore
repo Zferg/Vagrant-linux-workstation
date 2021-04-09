@@ -1,0 +1,5 @@
+shared/*
+*.vmx
+*.env
+*.vagrant
+*.log
