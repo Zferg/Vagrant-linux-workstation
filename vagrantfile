@@ -1,0 +1,40 @@
+# _*_ mode: ruby _*_
+# vi: set ft=ruby :
+
+# $LINUX_TOOLS = <<-EOF
+#   sudo apt install -y golang-go tldr httpie jq tor 
+# EOF
+
+Vagrant.configure("2") do |config|
+# Linux Workstation
+    config.vm.define "workstation", primary: true do |workstation|
+        workstation.vm.provider "virtualbox" do |v|
+            v.name = "workstation"
+            v.memory = 4096
+            v.cpus = 2
+            v.gui = true
+        end
+    
+        workstation.vm.box = "centos/7"
+        workstation.vm.hostname = "workstation.local"
+
+        # workstation.vm.provision "shell", type: "shell" do |s|
+        #     s.inline = $LINUX_TOOLS
+        # end
+
+        workstation.vm.provision "file", source: "data/code", destination: "$HOME/code"
+        
+        # workstation.trigger.after :up do |t|
+        #     t.info = "Starting tor"
+        #     t.run_remote = { 
+        #         inline: <<-EOF
+        #         sudo service tor start
+        #         EOF
+        #     }
+        # end
+    
+        workstation.vm.synced_folder "shared/", "/usr/shared"
+
+        workstation.vm.post_up_message = "Your Ubuntu workstation is ready!"
+    end
+end
